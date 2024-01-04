@@ -25,6 +25,9 @@
 
     <div id="iss_loc">  </div>
 
+    <form action="" method="post">
+        <button id="submit"></button>
+    </form>
 
     <script>
         if ("geolocation" in navigator) {
@@ -33,6 +36,16 @@
             navigator.geolocation.getCurrentPosition((position) => {
             console.log( position.coords.latitude);
             console.log( position.coords.longitude);
+            let lat = position.coords.latitude, lon = position.coords.longitude
+            const data = { lat, lon };
+             const options = {
+                   method: 'POST',
+                   headers: {
+                        'Content-Type': 'application/json'
+          },
+            body: JSON.stringify(data)
+        };
+        fetch('/api', options);
 
             document.getElementById('lat').textContent = position.coords.latitude;
             document.getElementById('long').textContent = position.coords.longitude;
@@ -51,12 +64,11 @@
 
             marker.setLatLng([position.coords.latitude, position.coords.longitude]);
             map.setView([position.coords.latitude, position.coords.longitude],5)
+    
             });
         } else {
             console.log('geolocation not available');
         }
-
-
     </script>
 </body>
 </html>
