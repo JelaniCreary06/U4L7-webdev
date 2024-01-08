@@ -25,17 +25,23 @@
 
     <div id="iss_loc">  </div>
 
-    <form action="" method="post">
-        <button id="submit"></button>
-    </form>
+    <button id="submit">Add location</button>
+    <p id="locations"></p>
+
 
     <script>
+        let loc = [], locp = document.getElementById('locations');
         if ("geolocation" in navigator) {
             console.log('geolocation available');
 
-            navigator.geolocation.getCurrentPosition((position) => {
+            navigator.geolocation.getCurrentPosition(async (position) => {
             console.log( position.coords.latitude);
             console.log( position.coords.longitude);
+
+            document.getElementById('submit').addEventListener('click', () => {
+                loc.push([position.coords.latitude, position.coords.longitude])
+                locp.textContent = loc;
+            })
             let lat = position.coords.latitude, lon = position.coords.longitude
             const data = { lat, lon };
              const options = {
@@ -45,7 +51,9 @@
           },
             body: JSON.stringify(data)
         };
-        fetch('/api', options);
+        const response = await fetch('/api', options);
+        const json = await response.json(); // this will be read as json
+        console.log(json);
 
             document.getElementById('lat').textContent = position.coords.latitude;
             document.getElementById('long').textContent = position.coords.longitude;
@@ -65,6 +73,7 @@
             marker.setLatLng([position.coords.latitude, position.coords.longitude]);
             map.setView([position.coords.latitude, position.coords.longitude],5)
     
+        
             });
         } else {
             console.log('geolocation not available');
